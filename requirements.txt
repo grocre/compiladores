@@ -1,0 +1,5 @@
+Package    Version
+---------- -------
+pip        22.3
+ply        3.11
+setuptools 65.5.0
