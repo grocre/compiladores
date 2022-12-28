@@ -1,0 +1,119 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> expression
+Rule 1     expression -> SELECT term
+Rule 2     term -> factor FROM factor
+Rule 3     term -> factor
+Rule 4     factor -> TABLE
+Rule 5     factor -> COLUMN
+Rule 6     factor -> ALL
+
+Terminals, with rules where they appear
+
+ALL                  : 6
+COLUMN               : 5
+FROM                 : 2
+SELECT               : 1
+TABLE                : 4
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 0
+factor               : 2 2 3
+term                 : 1
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expression
+    (1) expression -> . SELECT term
+
+    SELECT          shift and go to state 2
+
+    expression                     shift and go to state 1
+
+state 1
+
+    (0) S' -> expression .
+
+
+
+state 2
+
+    (1) expression -> SELECT . term
+    (2) term -> . factor FROM factor
+    (3) term -> . factor
+    (4) factor -> . TABLE
+    (5) factor -> . COLUMN
+    (6) factor -> . ALL
+
+    TABLE           shift and go to state 5
+    COLUMN          shift and go to state 6
+    ALL             shift and go to state 7
+
+    term                           shift and go to state 3
+    factor                         shift and go to state 4
+
+state 3
+
+    (1) expression -> SELECT term .
+
+    $end            reduce using rule 1 (expression -> SELECT term .)
+
+
+state 4
+
+    (2) term -> factor . FROM factor
+    (3) term -> factor .
+
+    FROM            shift and go to state 8
+    $end            reduce using rule 3 (term -> factor .)
+
+
+state 5
+
+    (4) factor -> TABLE .
+
+    FROM            reduce using rule 4 (factor -> TABLE .)
+    $end            reduce using rule 4 (factor -> TABLE .)
+
+
+state 6
+
+    (5) factor -> COLUMN .
+
+    FROM            reduce using rule 5 (factor -> COLUMN .)
+    $end            reduce using rule 5 (factor -> COLUMN .)
+
+
+state 7
+
+    (6) factor -> ALL .
+
+    FROM            reduce using rule 6 (factor -> ALL .)
+    $end            reduce using rule 6 (factor -> ALL .)
+
+
+state 8
+
+    (2) term -> factor FROM . factor
+    (4) factor -> . TABLE
+    (5) factor -> . COLUMN
+    (6) factor -> . ALL
+
+    TABLE           shift and go to state 5
+    COLUMN          shift and go to state 6
+    ALL             shift and go to state 7
+
+    factor                         shift and go to state 9
+
+state 9
+
+    (2) term -> factor FROM factor .
+
+    $end            reduce using rule 2 (term -> factor FROM factor .)
+

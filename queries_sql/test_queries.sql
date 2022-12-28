@@ -1,0 +1,1 @@
+SELECT * FROM cars WHERE "brand"=="ford" and "year"==2000;
