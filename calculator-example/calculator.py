@@ -70,7 +70,7 @@ def p_expression(p):
                | term MINUS term
     '''
     # p is a sequence that represents rule contents.
-    #
+    # 
     # expression : term PLUS term
     #   p[0]     : p[1] p[2] p[3]
     # 
