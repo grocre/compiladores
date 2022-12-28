@@ -48,7 +48,7 @@ def p_term_factor(p):
     '''
     term : factor
     '''
-    p[0] = p[1]
+    p[0] = p[1] # precedência
 
 def p_factor_table(p):
     '''
@@ -76,4 +76,22 @@ parser = yacc()
 
 # Parse an expression
 ast = parser.parse('SELECT * FROM tabela1')
+
+# p = ["SELECT", "*", "FROM", "tabela1"]
+
+''''
+p[0] = "SELECT"
+p[1] = "*"
+p[2] = "FROM"
+P[3] = "tabela1"
+
+Necessária uma função para tratar o dict
+
+fluxo: 
+
+dict -> compilador -> saida de um .sql -> execução do arquivo de saída
+
+'''
 print(ast)
+
+
