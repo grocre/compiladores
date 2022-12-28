@@ -4,6 +4,9 @@ services:
     image: postgres:alpine
     environment: 
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: 12345678
     ports:
       - 5432:5432
+    volumes: 
+    # trocar path depois
+      - ./queries_sql/out:/src
