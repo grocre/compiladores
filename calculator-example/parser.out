@@ -1,1 +1,42 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ALL
+
+Grammar
+
+Rule 0     S' -> sql
+Rule 1     sql -> CRIAR DATABASE VALOR
+Rule 2     sql -> crCRIAR TABELA_DE_EXEMPLO
+Rule 3     sql -> INSERIR VALOR
+Rule 4     sql -> LER COLECAO VALOR
+Rule 5     sql -> LER COLECAO ID VALOR
+Rule 6     sql -> LER COLECAO QUERY VALOR
+Rule 7     sql -> ATUALIZAR COLECAO ID VALOR
+Rule 8     sql -> ATUALIZAR COLECAO QUERY VALOR
+Rule 9     sql -> DELETAR COLECAO VALOR
+Rule 10    sql -> DELETAR COLECAO ID VALOR
+Rule 11    sql -> DELETAR COLECAO QUERY VALOR
+
+Terminals, with rules where they appear
+
+ALL                  : 
+ATUALIZAR            : 7 8
+COLECAO              : 4 5 6 7 8 9 10 11
+CRIAR                : 1
+DATABASE             : 1
+DELETAR              : 9 10 11
+ID                   : 5 7 10
+INSERIR              : 3
+LER                  : 4 5 6
+QUERY                : 6 8 11
+TABELA_DE_EXEMPLO    : 2
+VALOR                : 1 3 4 5 6 7 8 9 10 11
+error                : 
+
+Nonterminals, with rules where they appear
+
+crCRIAR              : 2
+sql                  : 0
+

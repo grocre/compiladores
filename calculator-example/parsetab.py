@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DIVIDE LPAREN MINUS NAME NUMBER PLUS RPAREN TIMES\n    expression : term PLUS term\n               | term MINUS term\n    \n    expression : term\n    \n    term : factor TIMES factor\n         | factor DIVIDE factor\n    \n    term : factor\n    \n    factor : NUMBER\n    \n    factor : NAME\n    \n    factor : PLUS factor\n           | MINUS factor\n    \n    factor : LPAREN expression RPAREN\n    '
+_lr_signature = 'ALL ATUALIZAR COLECAO CRIAR DATABASE DELETAR ID INSERIR LER QUERY TABELA_DE_EXEMPLO VALORsql : CRIAR DATABASE VALOR\n            | CRIAR TABELA_DE_EXEMPLO\n            | INSERIR VALOR\n            | LER COLECAO VALOR\n            | LER COLECAO ID VALOR\n            | LER COLECAO QUERY VALOR\n            | ATUALIZAR COLECAO ID VALOR\n            | ATUALIZAR COLECAO QUERY VALOR\n            | DELETAR COLECAO VALOR\n            | DELETAR COLECAO ID VALOR\n            | DELETAR COLECAO QUERY VALOR\n            '
     
-_lr_action_items = {'NUMBER':([0,3,4,8,9,10,13,14,],[6,6,6,6,6,6,6,6,]),'NAME':([0,3,4,8,9,10,13,14,],[7,7,7,7,7,7,7,7,]),'PLUS':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,18,19,20,],[3,9,3,3,-6,-7,-8,3,3,3,-9,-10,3,3,-4,-5,-11,]),'MINUS':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,18,19,20,],[4,10,4,4,-6,-7,-8,4,4,4,-9,-10,4,4,-4,-5,-11,]),'LPAREN':([0,3,4,8,9,10,13,14,],[8,8,8,8,8,8,8,8,]),'$end':([1,2,5,6,7,11,12,16,17,18,19,20,],[0,-3,-6,-7,-8,-9,-10,-1,-2,-4,-5,-11,]),'RPAREN':([2,5,6,7,11,12,15,16,17,18,19,20,],[-3,-6,-7,-8,-9,-10,20,-1,-2,-4,-5,-11,]),'TIMES':([5,6,7,11,12,20,],[13,-7,-8,-9,-10,-11,]),'DIVIDE':([5,6,7,11,12,20,],[14,-7,-8,-9,-10,-11,]),}
+_lr_action_items = {'CRIAR':([0,],[2,]),'INSERIR':([0,],[3,]),'LER':([0,],[4,]),'ATUALIZAR':([0,],[5,]),'DELETAR':([0,],[6,]),'$end':([1,8,9,13,14,19,22,23,24,25,26,27,],[0,-2,-3,-1,-4,-9,-5,-6,-7,-8,-10,-11,]),'DATABASE':([2,],[7,]),'TABELA_DE_EXEMPLO':([2,],[8,]),'VALOR':([3,7,10,12,15,16,17,18,20,21,],[9,13,14,19,22,23,24,25,26,27,]),'COLECAO':([4,5,6,],[10,11,12,]),'ID':([10,11,12,],[15,17,20,]),'QUERY':([10,11,12,],[16,18,21,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,8,],[1,15,]),'term':([0,8,9,10,],[2,2,16,17,]),'factor':([0,3,4,8,9,10,13,14,],[5,11,12,5,5,5,18,19,]),}
+_lr_goto_items = {'sql':([0,],[1,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,16 +26,16 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> term PLUS term','expression',3,'p_expression','doc_calculator.py',69),
-  ('expression -> term MINUS term','expression',3,'p_expression','doc_calculator.py',70),
-  ('expression -> term','expression',1,'p_expression_term','doc_calculator.py',81),
-  ('term -> factor TIMES factor','term',3,'p_term','doc_calculator.py',87),
-  ('term -> factor DIVIDE factor','term',3,'p_term','doc_calculator.py',88),
-  ('term -> factor','term',1,'p_term_factor','doc_calculator.py',94),
-  ('factor -> NUMBER','factor',1,'p_factor_number','doc_calculator.py',100),
-  ('factor -> NAME','factor',1,'p_factor_name','doc_calculator.py',106),
-  ('factor -> PLUS factor','factor',2,'p_factor_unary','doc_calculator.py',112),
-  ('factor -> MINUS factor','factor',2,'p_factor_unary','doc_calculator.py',113),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_grouped','doc_calculator.py',119),
+  ("S' -> sql","S'",1,None,None,None),
+  ('sql -> CRIAR DATABASE VALOR','sql',3,'p_crud','calculator.py',60),
+  ('sql -> CRIAR TABELA_DE_EXEMPLO','sql',2,'p_crud','calculator.py',61),
+  ('sql -> INSERIR VALOR','sql',2,'p_crud','calculator.py',62),
+  ('sql -> LER COLECAO VALOR','sql',3,'p_crud','calculator.py',63),
+  ('sql -> LER COLECAO ID VALOR','sql',4,'p_crud','calculator.py',64),
+  ('sql -> LER COLECAO QUERY VALOR','sql',4,'p_crud','calculator.py',65),
+  ('sql -> ATUALIZAR COLECAO ID VALOR','sql',4,'p_crud','calculator.py',66),
+  ('sql -> ATUALIZAR COLECAO QUERY VALOR','sql',4,'p_crud','calculator.py',67),
+  ('sql -> DELETAR COLECAO VALOR','sql',3,'p_crud','calculator.py',68),
+  ('sql -> DELETAR COLECAO ID VALOR','sql',4,'p_crud','calculator.py',69),
+  ('sql -> DELETAR COLECAO QUERY VALOR','sql',4,'p_crud','calculator.py',70),
 ]

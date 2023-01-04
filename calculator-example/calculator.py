@@ -1,131 +1,193 @@
-# -----------------------------------------------------------------------------
-# example.py
-#
-# Example of using PLY To parse the following simple grammar.
-#
-#   expression : term PLUS term
-#              | term MINUS term
-#              | term
-#
-#   term       : factor TIMES factor
-#              | factor DIVIDE factor
-#              | factor
-#
-#   factor     : NUMBER
-#              | NAME
-#              | PLUS factor
-#              | MINUS factor
-#              | LPAREN expression RPAREN
-#
-# -----------------------------------------------------------------------------
+import ply.lex as lex
+import ply.yacc as yacc
+import sqlite3
+import json
+import subprocess
 
-from ply.lex import lex
-from ply.yacc import yacc
+db = ""
+database = ""
+client = ""
 
-# --- Tokenizer
+# Tokens da linguagem do CRUD
+tokens = ['CRIAR', 'DATABASE', 'TABELA_DE_EXEMPLO', 'ALL', 'INSERIR',
+          'LER', 'ATUALIZAR', 'DELETAR', 'COLECAO', 'ID', 'VALOR', "QUERY"]
 
-# All tokens must be named in advance.
-tokens = ( 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN',
-           'NAME', 'NUMBER' )
+# Regras para os tokens
+t_CRIAR = r'criar'
+t_ALL = r'\*'
+t_DATABASE = r'database'
+t_INSERIR = r'inserir'
+t_LER = r'ler'
+t_ATUALIZAR = r'atualizar'
+t_DELETAR = r'deletar'
+t_COLECAO = r'colecao'
+t_ID = r'id'
+t_QUERY = r'query'
+t_TABELA_DE_EXEMPLO = r'tabela-de-exemplo'
 
-# Ignored characters
-t_ignore = ' \t'
+# Regra para reconhecimento de strings
 
-# Token matching rules are written as regexs
-t_PLUS = r'\+'
-t_MINUS = r'-'
-t_TIMES = r'\*'
-t_DIVIDE = r'/'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
-# A function can be used if there is an associated action.
-# Write the matching regex in the docstring.
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)
+def t_VALOR(t):
+    r'".*"'
+    t.value = t.value[1:-1]
     return t
 
-# Ignored token with an action associated with it
-def t_ignore_newline(t):
-    r'\n+'
-    t.lexer.lineno += t.value.count('\n')
 
-# Error handler for illegal characters
+def t_COLUNA(t):
+    r'".*"'
+    t.value = t.value[:]
+    return t
+
+
+# Regra para ignorar espaços em branco
+t_ignore = ' \t'
+
+# Regra para lidar com erros
+
+
 def t_error(t):
-    print(f'Illegal character {t.value[0]!r}')
+    print(f'Erro léxico: {t.value[0]}')
     t.lexer.skip(1)
 
-# Build the lexer object
-lexer = lex()
-    
-# --- Parser
 
-# Write functions for each grammar rule which is
-# specified in the docstring.
-def p_expression(p):
-    '''
-    expression : term PLUS term
-               | term MINUS term
-    '''
-    # p is a sequence that represents rule contents.
-    #
-    # expression : term PLUS term
-    #   p[0]     : p[1] p[2] p[3]
-    # 
-    p[0] = ('binop', p[2], p[1], p[3])
+# Criação do analisador léxico
+lexer = lex.lex()
 
-def p_expression_term(p):
-    '''
-    expression : term
-    '''
-    p[0] = p[1]
+# Definição da gramática da linguagem do CRUD
 
-def p_term(p):
-    '''
-    term : factor TIMES factor
-         | factor DIVIDE factor
-    '''
-    p[0] = ('binop', p[2], p[1], p[3])
 
-def p_term_factor(p):
-    '''
-    term : factor
-    '''
-    p[0] = p[1]
+def p_crud(p):
+    '''sql : CRIAR DATABASE VALOR
+            | CRIAR TABELA_DE_EXEMPLO
+            | INSERIR VALOR
+            | LER COLECAO VALOR
+            | LER COLECAO ID VALOR
+            | LER COLECAO QUERY VALOR
+            | ATUALIZAR COLECAO ID VALOR
+            | ATUALIZAR COLECAO QUERY VALOR
+            | DELETAR COLECAO VALOR
+            | DELETAR COLECAO ID VALOR
+            | DELETAR COLECAO QUERY VALOR
+            '''
+    global db
+    global database
+    global client
 
-def p_factor_number(p):
-    '''
-    factor : NUMBER
-    '''
-    p[0] = ('number', p[1])
+    if p[1] == 'criar' and p[2] == 'database':
+        print(f'Criando banco {p[3]} no SQlite3')
+        conn = sqlite3.connect(f'{p[3]}.db')
+        db = conn
+        database = p[3]
+    elif p[1] == 'criar' and p[2] == 'tabela-de-exemplo':
+        if database == '':
+            print('Precisa criar um banco de dados primeiro. Use a seguinte expressao para realizar essa operacao: criar database "nome do banco"')
+        else:
+            print(f'Criando tabela de exemplo no banco de dados {database}')
+            conn = sqlite3.connect(f'{database}.db')
+            cursor = conn.cursor()
+            cursor.execute("""
+                            CREATE TABLE clientes (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                                    nome TEXT NOT NULL,
+                                    idade INTEGER,
+                                    cpf     VARCHAR(11) NOT NULL,
+                                    email TEXT NOT NULL,
+                                    fone TEXT,
+                                    cidade TEXT,
+                                    uf VARCHAR(2) NOT NULL,
+                                    criado_em DATE NOT NULL
+                            );
+                            """)
+            print('Tabela criada com sucesso.')
+            print(subprocess.run(['sqlite3', 'compiladores.db', "'PRAGMA table_info(clientes)'"], capture_output=True))
+    elif db == "":
+        print('Banco de dados ainda não foi criado, usar: criar database "nome do banco"')
+    elif p[1] == 'inserir':
+        doc = json.loads(p[2].split(".")[1])
+        print(
+            f'Inserindo documento no banco de dados {database} na coluna {p[2].split(".")[0]}')
+        db[p[2].split(".")[0]].insert_one(doc)
+    elif p[1] == 'ler':
+        if len(p) > 4:
+            if p[3] == 'id':
+                s = p[4].split(".")
+                print(f'Lendo documento com ID {s[1]} na coleção {s[0]}')
+                result = db[s[0]].find_one({"_id": ObjectId(s[1])})
+                if result != None:
+                    print(result)
+                else:
+                    print(
+                        f"Nenhum item foi encontrado na coleção {s[0]} com ID = {s[1]}")
+            elif p[3] == 'query':
+                s = p[4].split(".")
+                print(
+                    f'Lendo todos os documento que satisfazem a QUERY: {s[1]} na coleção {s[0]}')
+                doc = json.loads(s[1])
+                resp = db[s[0]].find(doc)
+                cont = 0
+                for item in resp:
+                    print(item)
+                    cont += 1
+                if cont == 0:
+                    print(
+                        f"Nenhum item foi encontrado na coleção {s[0]} com query: {s[1]}")
+        else:
+            print(f'Lendo todos os documentos na coleção {p[3]}')
+            resp = db[p[3]].find()
+            cont = 0
+            for item in resp:
+                print(item)
+                cont += 1
+            if cont == 0:
+                print(f"Nenhum item foi encontrado na coleção {p[3]}")
 
-def p_factor_name(p):
-    '''
-    factor : NAME
-    '''
-    p[0] = ('name', p[1])
+    elif p[1] == 'atualizar':
+        if p[3] == 'id':
+            s = p[4].split(".")
+            print(
+                f'Atualizando documento com ID {s[1]} na coleção {s[0]} com o novo valor {s[2]}')
+            update = json.loads(s[2])
+            result = db[s[0]].update_one(
+                {"_id": ObjectId(s[1])}, {"$set": update})
 
-def p_factor_unary(p):
-    '''
-    factor : PLUS factor
-           | MINUS factor
-    '''
-    p[0] = ('unary', p[1], p[2])
+        elif p[3] == 'query':
+            s = p[4].split(".")
+            print(
+                f'Atualizando todos os documento que satisfazem a QUERY: {s[1]} na coleção {s[0]} com o novo valor {s[2]}')
+            query = json.loads(s[1])
+            update = json.loads(s[2])
+            result = db[s[0]].update_many(query, {"$set": update})
 
-def p_factor_grouped(p):
-    '''
-    factor : LPAREN expression RPAREN
-    '''
-    p[0] = ('grouped', p[2])
+    elif p[1] == 'deletar':
+        if len(p) > 4:
+            if p[3] == 'id':
+                s = p[4].split(".")
+                print(f'Deletando documento com ID {s[1]} na coleção {s[0]}')
+                result = db[s[0]].delete_one({"_id": ObjectId(s[1])})
+
+            elif p[3] == 'query':
+                s = p[4].split(".")
+                print(
+                    f'Deletando todos os documento que satisfazem a QUERY: {s[1]} na coleção {s[0]}')
+                query = json.loads(s[1])
+                result = db[s[0]].delete_many(query)
+        else:
+            print(f'Deletando todos os documentos na coleção {p[3]}')
+            result = db[p[3]].delete_many({})
+
 
 def p_error(p):
-    print(f'Syntax error at {p.value!r}')
+    print(f'Erro sintático: {p}')
 
-# Build the parser
-parser = yacc()
 
-# Parse an expression
-ast = parser.parse('2 * 3 + 4 * (5 - x)')
-print(ast)
+# Criação do analisador sintático
+parser = yacc.yacc()
+
+while True:
+    try:
+        s = input('')
+    except EOFError:
+        break
+
+    result = parser.parse(s)
