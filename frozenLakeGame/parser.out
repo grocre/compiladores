@@ -1,0 +1,155 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> expressao
+Rule 1     expressao -> comando acao
+Rule 2     expressao -> comando
+Rule 3     comando -> INICIAR
+Rule 4     comando -> MOVER
+Rule 5     comando -> PEGAR
+Rule 6     comando -> SAIR
+Rule 7     acao -> BAIXO
+Rule 8     acao -> CIMA
+Rule 9     acao -> DIREITA
+Rule 10    acao -> ESQUERDA
+
+Terminals, with rules where they appear
+
+BAIXO                : 7
+CIMA                 : 8
+DIREITA              : 9
+ESQUERDA             : 10
+INICIAR              : 3
+MOVER                : 4
+PEGAR                : 5
+SAIR                 : 6
+error                : 
+
+Nonterminals, with rules where they appear
+
+acao                 : 1
+comando              : 1 2
+expressao            : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expressao
+    (1) expressao -> . comando acao
+    (2) expressao -> . comando
+    (3) comando -> . INICIAR
+    (4) comando -> . MOVER
+    (5) comando -> . PEGAR
+    (6) comando -> . SAIR
+
+    INICIAR         shift and go to state 3
+    MOVER           shift and go to state 4
+    PEGAR           shift and go to state 5
+    SAIR            shift and go to state 6
+
+    expressao                      shift and go to state 1
+    comando                        shift and go to state 2
+
+state 1
+
+    (0) S' -> expressao .
+
+
+
+state 2
+
+    (1) expressao -> comando . acao
+    (2) expressao -> comando .
+    (7) acao -> . BAIXO
+    (8) acao -> . CIMA
+    (9) acao -> . DIREITA
+    (10) acao -> . ESQUERDA
+
+    $end            reduce using rule 2 (expressao -> comando .)
+    BAIXO           shift and go to state 8
+    CIMA            shift and go to state 9
+    DIREITA         shift and go to state 10
+    ESQUERDA        shift and go to state 11
+
+    acao                           shift and go to state 7
+
+state 3
+
+    (3) comando -> INICIAR .
+
+    BAIXO           reduce using rule 3 (comando -> INICIAR .)
+    CIMA            reduce using rule 3 (comando -> INICIAR .)
+    DIREITA         reduce using rule 3 (comando -> INICIAR .)
+    ESQUERDA        reduce using rule 3 (comando -> INICIAR .)
+    $end            reduce using rule 3 (comando -> INICIAR .)
+
+
+state 4
+
+    (4) comando -> MOVER .
+
+    BAIXO           reduce using rule 4 (comando -> MOVER .)
+    CIMA            reduce using rule 4 (comando -> MOVER .)
+    DIREITA         reduce using rule 4 (comando -> MOVER .)
+    ESQUERDA        reduce using rule 4 (comando -> MOVER .)
+    $end            reduce using rule 4 (comando -> MOVER .)
+
+
+state 5
+
+    (5) comando -> PEGAR .
+
+    BAIXO           reduce using rule 5 (comando -> PEGAR .)
+    CIMA            reduce using rule 5 (comando -> PEGAR .)
+    DIREITA         reduce using rule 5 (comando -> PEGAR .)
+    ESQUERDA        reduce using rule 5 (comando -> PEGAR .)
+    $end            reduce using rule 5 (comando -> PEGAR .)
+
+
+state 6
+
+    (6) comando -> SAIR .
+
+    BAIXO           reduce using rule 6 (comando -> SAIR .)
+    CIMA            reduce using rule 6 (comando -> SAIR .)
+    DIREITA         reduce using rule 6 (comando -> SAIR .)
+    ESQUERDA        reduce using rule 6 (comando -> SAIR .)
+    $end            reduce using rule 6 (comando -> SAIR .)
+
+
+state 7
+
+    (1) expressao -> comando acao .
+
+    $end            reduce using rule 1 (expressao -> comando acao .)
+
+
+state 8
+
+    (7) acao -> BAIXO .
+
+    $end            reduce using rule 7 (acao -> BAIXO .)
+
+
+state 9
+
+    (8) acao -> CIMA .
+
+    $end            reduce using rule 8 (acao -> CIMA .)
+
+
+state 10
+
+    (9) acao -> DIREITA .
+
+    $end            reduce using rule 9 (acao -> DIREITA .)
+
+
+state 11
+
+    (10) acao -> ESQUERDA .
+
+    $end            reduce using rule 10 (acao -> ESQUERDA .)
+
